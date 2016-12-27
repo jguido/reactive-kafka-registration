@@ -1,0 +1,5 @@
+package producers
+
+trait Producerable {
+
+}

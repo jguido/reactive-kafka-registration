@@ -1,4 +1,4 @@
-package reactivekafka
+package consumers
 
 object RandomNumbers {
   val Topic = "RandomNumbers"

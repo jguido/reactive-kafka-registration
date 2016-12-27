@@ -1,33 +1,36 @@
-package reactivekafka
+package producers
 
-import akka.actor.{ Actor, ActorLogging, Cancellable }
+import akka.actor.{Actor, ActorLogging, Cancellable}
 import akka.kafka.ProducerSettings
 import akka.kafka.scaladsl.Producer
 import akka.stream.Materializer
-import akka.stream.scaladsl.{ Keep, Source }
+import akka.stream.scaladsl.{Keep, Source}
+import config.AppConfig
+import consumers.RandomNumbers
 import org.apache.kafka.clients.producer.ProducerRecord
-import org.apache.kafka.common.serialization.{ ByteArraySerializer, StringSerializer }
+import org.apache.kafka.common.serialization.{ByteArraySerializer, StringSerializer}
+
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration.{ Duration, _ }
+import scala.concurrent.duration.{Duration, _}
 import scala.util.Random
 
 /**
  * Generates random numbers and puts them to Kafka.
  */
-class RandomNumberWriter(implicit mat: Materializer) extends Actor with ActorLogging {
+class RandomNumberWriter(implicit mat: Materializer) extends Actor with ActorLogging with AppConfig {
 
   import RandomNumberWriter._
 
-  override def preStart(): Unit = {
-    super.preStart()
-    self ! Run
-  }
+//  override def preStart(): Unit = {
+//    super.preStart()
+//    self ! Run
+//  }
 
   override def receive: Receive = {
     case Run =>
-      val tickSource = Source.tick(Duration.Zero, 1.second, Unit).map(_ => Random.nextInt().toString)
+      val tickSource: Source[String, Cancellable] = Source.tick(Duration.Zero, 1.second, Unit).map(_ => Random.nextInt().toString)
       val producerSettings = ProducerSettings(context.system, new ByteArraySerializer, new StringSerializer)
-        .withBootstrapServers("localhost:9092")
+        .withBootstrapServers(s"${kafkaConfig.uri}:${kafkaConfig.port}")
       log.info("Initializing writer")
       val kafkaSink = Producer.plainSink(producerSettings)
 

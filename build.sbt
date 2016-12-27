@@ -1,5 +1,3 @@
-import scalariform.formatter.preferences._
-
 name := "reactive-kafka-scala"
 
 version := "3.0"
@@ -18,15 +16,5 @@ libraryDependencies ++= Seq(
   "net.manub" %% "scalatest-embedded-kafka" % "0.7.1"
     exclude("log4j", "log4j")
 )
-
-enablePlugins(PlayScala)
-
-scalariformSettings
-
-ScalariformKeys.preferences := ScalariformKeys.preferences.value
-  .setPreference(AlignSingleLineCaseStatements, true)
-  .setPreference(AlignSingleLineCaseStatements.MaxArrowIndent, 100)
-  .setPreference(DoubleIndentClassDeclaration, true)
-  .setPreference(PreserveDanglingCloseParenthesis, true)
 
 cancelable in Global := true
