@@ -32,7 +32,7 @@ trait Consumerable extends ActorBroker {
 
   override def receive: Receive = {
     case Start =>
-      log.info("Initializing logging consumer")
+      log.info(s"Initializing $consumerName consumer")
       val (control, future) = createSource(consumerName, topicName)(context.system)
         .mapAsync(10)(processMessage)
         .map(_.committableOffset)
@@ -50,12 +50,12 @@ trait Consumerable extends ActorBroker {
           throw ex
       }
 
-      log.info("Logging consumer started")
+      log.info(s"$consumerName consumer started")
   }
 
   def running(control: Control): Receive = {
     case Stop =>
-      log.info("Shutting down logging consumer stream and actor")
+      log.info(s"Shutting down $consumerName consumer stream and actor")
       control.shutdown().andThen {
         case _ =>
           context.stop(self)

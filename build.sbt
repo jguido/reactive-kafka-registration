@@ -20,3 +20,10 @@ libraryDependencies ++= Seq(
 cancelable in Global := true
 
 assemblyJarName in assembly := "kafka-broker.jar"
+
+credentials += Credentials("Sonatype Nexus Repository Manager", "0.0.0.0:8001", "admin", "admin123")
+
+publishTo := {
+  val nexus = "http://0.0.0.0:8001"
+  Some("releases" at nexus + "/nexus/content/repositories/snapshots")
+}

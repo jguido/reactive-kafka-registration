@@ -12,7 +12,7 @@ object Application extends App  {
   private val load: Config = ConfigFactory.load("application").getConfig("app")
   val appConfig = new AppConfig(load)
 
-  val writer = system.actorOf(Props(new RandomNumberWriter(appConfig)))
+  val writer = system.actorOf(Props(new RandomNumberProducer(appConfig)))
   Thread.sleep(2000)
 
   val loggingConsumer = system.actorOf(Props(new LoggingConsumer(appConfig)))
